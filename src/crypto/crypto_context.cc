@@ -439,20 +439,33 @@ void SecureContext::Init(const FunctionCallbackInfo<Value>& args) {
   if (args[0]->IsString()) {
     Utf8Value sslmethod(env->isolate(), args[0]);
 
-    // Note that SSLv2 and SSLv3 are disallowed but SSLv23_method and friends
+    // Note that SSLv2 is disallowed but SSLv23_method and friends
     // are still accepted.  They are OpenSSL's way of saying that all known
     // protocols below TLS 1.3 are supported unless explicitly disabled (which
-    // we do below for SSLv2 and SSLv3.)
+    // we do below for SSLv2.)
     if (sslmethod == "SSLv2_method" ||
         sslmethod == "SSLv2_server_method" ||
         sslmethod == "SSLv2_client_method") {
       THROW_ERR_TLS_INVALID_PROTOCOL_METHOD(env, "SSLv2 methods disabled");
       return;
-    } else if (sslmethod == "SSLv3_method" ||
-               sslmethod == "SSLv3_server_method" ||
-               sslmethod == "SSLv3_client_method") {
-      THROW_ERR_TLS_INVALID_PROTOCOL_METHOD(env, "SSLv3 methods disabled");
-      return;
+    } else if (strcmp(*sslmethod, "SSLv3_method") == 0) {
+      #ifndef OPENSSL_NO_SSL3
+      method = SSLv3_method();
+      #else
+      return env->ThrowError("SSLv3 methods disabled");
+      #endif
+    } else if (strcmp(*sslmethod, "SSLv3_server_method") == 0) {
+      #ifndef OPENSSL_NO_SSL3
+      method = SSLv3_server_method();
+      #else
+      return env->ThrowError("SSLv3 methods disabled");
+      #endif
+    } else if (strcmp(*sslmethod, "SSLv3_client_method") == 0) {
+      #ifndef OPENSSL_NO_SSL3
+      method = SSLv3_client_method();
+      #else
+      return env->ThrowError("SSLv3 methods disabled");
+      #endif
     } else if (sslmethod == "SSLv23_method") {
       max_version = TLS1_2_VERSION;
     } else if (sslmethod == "SSLv23_server_method") {

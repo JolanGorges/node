@@ -157,6 +157,9 @@ static const OSSL_ALGORITHM deflt_digests[] = {
 };
 
 static const OSSL_ALGORITHM_CAPABLE deflt_ciphers[] = {
+    ALG(PROV_NAMES_RC4, ossl_rc4128_functions),
+    ALG(PROV_NAMES_RC4_40, ossl_rc440_functions),
+    ALG(PROV_NAMES_RC4_HMAC_MD5, ossl_rc4_hmac_ossl_md5_functions),
     ALG(PROV_NAMES_NULL, ossl_null_functions),
     ALG(PROV_NAMES_AES_256_ECB, ossl_aes256ecb_functions),
     ALG(PROV_NAMES_AES_192_ECB, ossl_aes192ecb_functions),

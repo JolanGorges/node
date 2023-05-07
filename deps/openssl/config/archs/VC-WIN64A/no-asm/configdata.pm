@@ -201,13 +201,10 @@ our %config = (
         "OPENSSL_NO_MSAN",
         "OPENSSL_NO_RC5",
         "OPENSSL_NO_SCTP",
-        "OPENSSL_NO_SSL3",
-        "OPENSSL_NO_SSL3_METHOD",
         "OPENSSL_NO_TRACE",
         "OPENSSL_NO_UBSAN",
         "OPENSSL_NO_UNIT_TEST",
         "OPENSSL_NO_UPLINK",
-        "OPENSSL_NO_WEAK_SSL_CIPHERS",
         "OPENSSL_NO_DYNAMIC_ENGINE"
     ],
     "openssl_other_defines" => [
@@ -217,7 +214,7 @@ our %config = (
         "OPENSSL_SYS_WIN64A"
     ],
     "openssldir" => "",
-    "options" => "enable-ssl-trace enable-fips no-afalgeng no-asan no-asm no-buildtest-c++ no-comp no-crypto-mdebug no-crypto-mdebug-backtrace no-devcryptoeng no-dynamic-engine no-ec_nistp_64_gcc_128 no-egd no-external-tests no-fuzz-afl no-fuzz-libfuzzer no-ktls no-loadereng no-md2 no-msan no-rc5 no-sctp no-shared no-ssl3 no-ssl3-method no-trace no-ubsan no-unit-test no-uplink no-weak-ssl-ciphers no-zlib no-zlib-dynamic",
+    "options" => "enable-ssl-trace enable-fips enable-ssl3 enable-ssl3-method enable-weak-ssl-ciphers no-afalgeng no-asan no-asm no-buildtest-c++ no-comp no-crypto-mdebug no-crypto-mdebug-backtrace no-devcryptoeng no-dynamic-engine no-ec_nistp_64_gcc_128 no-egd no-external-tests no-fuzz-afl no-fuzz-libfuzzer no-ktls no-loadereng no-md2 no-msan no-rc5 no-sctp no-shared no-trace no-ubsan no-unit-test no-uplink no-zlib no-zlib-dynamic",
     "patch" => "13",
     "perl_archname" => "x86_64-linux-gnu-thread-multi",
     "perl_cmd" => "/usr/bin/perl",
@@ -229,6 +226,9 @@ our %config = (
         "enable-ssl-trace",
         "enable-fips",
         "no-asm",
+        "enable-ssl3",
+        "enable-ssl3-method",
+        "enable-weak-ssl-ciphers",
         "VC-WIN64A"
     ],
     "perlenv" => {
@@ -517,13 +517,10 @@ our %disabled = (
     "rc5" => "default",
     "sctp" => "default",
     "shared" => "option",
-    "ssl3" => "default",
-    "ssl3-method" => "default",
     "trace" => "default",
     "ubsan" => "default",
     "unit-test" => "default",
     "uplink" => "cascade",
-    "weak-ssl-ciphers" => "default",
     "zlib" => "default",
     "zlib-dynamic" => "default"
 );
@@ -27569,12 +27566,6 @@ my %disabled_info = (
     "sctp" => {
         "macro" => "OPENSSL_NO_SCTP"
     },
-    "ssl3" => {
-        "macro" => "OPENSSL_NO_SSL3"
-    },
-    "ssl3-method" => {
-        "macro" => "OPENSSL_NO_SSL3_METHOD"
-    },
     "trace" => {
         "macro" => "OPENSSL_NO_TRACE"
     },
@@ -27586,9 +27577,6 @@ my %disabled_info = (
     },
     "uplink" => {
         "macro" => "OPENSSL_NO_UPLINK"
-    },
-    "weak-ssl-ciphers" => {
-        "macro" => "OPENSSL_NO_WEAK_SSL_CIPHERS"
     }
 );
 my @user_crossable = qw( AR AS CC CXX CPP LD MT RANLIB RC );

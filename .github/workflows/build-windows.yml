@@ -1,22 +1,9 @@
 name: Build Windows
 
 on:
-  pull_request:
-    paths-ignore:
-      - README.md
-      - .github/**
-      - '!.github/workflows/build-windows.yml'
-    types: [opened, synchronize, reopened, ready_for_review]
   push:
-    branches:
-      - main
-      - canary
-      - v[0-9]+.x-staging
-      - v[0-9]+.x
-    paths-ignore:
-      - README.md
-      - .github/**
-      - '!.github/workflows/build-windows.yml'
+    tags:
+      - 'v*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -27,22 +14,21 @@ env:
   FLAKY_TESTS: keep_retrying
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-windows:
-    if: github.event.pull_request.draft == false
     strategy:
       matrix:
         windows: [windows-2022]
       fail-fast: false
     runs-on: ${{ matrix.windows }}
     steps:
-      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b  # v4.1.4
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d  # v5.1.0
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install deps
@@ -51,3 +37,9 @@ jobs:
         run: npx envinfo
       - name: Build
         run: ./vcbuild.bat
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            out/Release/node.exe
+            out/Release/openssl-cli.exe
